@@ -169,7 +169,27 @@ async def verificar_boton(
         parse_mode="HTML",
     )
 
+async def bienvenida_mundo_cachinero(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    if update.effective_chat.username != "MundoCachineroStreaming":
+        return
 
+    for usuario in update.message.new_chat_members:
+        if usuario.is_bot:
+            continue
+
+        nombre = usuario.first_name or "amig@"
+
+        await update.message.reply_text(
+            f"🎉 ¡BIENVENID@ {nombre}! 🎉\n\n"
+            "🌎 Bienvenid@ a MUNDO CACHINERO STREAMING 🌎\n\n"
+            "📢 Ofrece tus servicios y conecta con nuestra comunidad.\n"
+            "👮 Única regla: SER LEGAL.\n\n"
+            "✅ Recuerda unirte a todos los grupos de nuestra comunidad "
+            "para poder escribir y publicar."
+        )
 async def start(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
@@ -203,7 +223,12 @@ def main():
             verificar_usuario,
         )
     )
-
+    app.add_handler(
+        MessageHandler(
+            filters.StatusUpdate.NEW_CHAT_MEMBERS,
+            bienvenida_mundo_cachinero,
+        )
+    )
     print("Bot iniciado correctamente")
 
     app.run_polling(
